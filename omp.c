@@ -1,3 +1,4 @@
+// gcc -fopenmp -O3 -g -std=c99 omp.c -o omp
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,10 +7,11 @@
 #define X_SIZE 1000
 #define Y_SIZE 1000
 #define Z_SIZE 1000
-#define TRANS(x,y,z) (x + y * Y_SIZE + z * Z_SIZE * Y_SIZE)
+#define TRANS(z,y,x) (x + y * Y_SIZE + z * Z_SIZE * Y_SIZE)
 
 int * alloc_mat (const int x, const int y, const int z) {
-    int *mat = malloc(sizeof(int) * x * y * z);
+    const size_t size = sizeof(int) * x * y * z;
+    int *mat = malloc(size);
     if (mat == NULL) {
         perror("malloc failed");
         exit(EXIT_FAILURE);
@@ -30,12 +32,14 @@ int main (int argc, char **argv) {
     memset(src_mat, 0x0, sizeof(int) * X_SIZE * Y_SIZE * Z_SIZE);
     memset(tar_mat, 0x0, sizeof(int) * X_SIZE * Y_SIZE * Z_SIZE);
 
-    #pragma omp parallel for default(shared)
-    for (int i = 0; i < X_SIZE; i++) {
-        #pragma omp parallel for default(shared) private(i)
-        for (int j = 0; j < Y_SIZE; j++) {
-            #pragma omp parallel for default(shared) private(i,j)
-            for (int k = 0; k < Z_SIZE; k++) {
+    int i, j, k;
+    #pragma omp parallel for shared(tar_mat) private(i,j,k) schedule(static,100)
+    for (i = 0; i < X_SIZE; i++) {
+        for (j = 0; j < Y_SIZE; j++) {
+            for (k = 0; k < Z_SIZE; k++) {
+#ifdef DEBUG
+                printf("x:%i y:%i z:%i offset:%i\n", i, j, k, TRANS(i,j,k));
+#endif
                 tar_mat[TRANS(i,j,k)] = src_mat[TRANS(i,j,k)];
             }
         }
