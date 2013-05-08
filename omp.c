@@ -24,8 +24,6 @@ void free_mat (int *mat) {
 }
 
 int main (int argc, char **argv) {
-    int nthreads, tid;
-
     int *src_mat = alloc_mat(X_SIZE, Y_SIZE, Z_SIZE);
     int *tar_mat = alloc_mat(X_SIZE, Y_SIZE, Z_SIZE);
 
