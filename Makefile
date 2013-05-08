@@ -1,5 +1,5 @@
 .PHONY=clean distclean timings scalasca 
-CFLAGS:=-fopenmp -O3 -g -std=c99 -mtune=native -march=native
+CFLAGS:=-fopenmp -O3 -g -std=c99 -mtune=native -march=native -Wall -pedantic -Wextra
 CC=gcc
 
 omp: omp.c
