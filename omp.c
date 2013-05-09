@@ -9,9 +9,14 @@
 #define Z_SIZE 1000
 #define TRANS(z,y,x) (x + y * Y_SIZE + z * Z_SIZE * Y_SIZE)
 
-int * alloc_mat (const int x, const int y, const int z) {
-    const size_t size = sizeof(int) * x * y * z;
-    int *mat = malloc(size);
+typedef int element;
+
+element * alloc_mat (const unsigned int x, const unsigned int y, const unsigned int z) {
+    const size_t size = sizeof(element) * x * y * z;
+    element *mat = malloc(size);
+#ifdef VERBOSE
+    fprintf(stderr, "Size of malloc: %likb\n", size / 1024);
+#endif
     if (mat == NULL) {
         perror("malloc failed");
         exit(EXIT_FAILURE);
@@ -19,16 +24,16 @@ int * alloc_mat (const int x, const int y, const int z) {
     return mat;
 }
 
-void free_mat (int *mat) {
+void free_mat (element *mat) {
     free(mat);
 }
 
 int main (int argc, char **argv) {
-    int *src_mat = alloc_mat(X_SIZE, Y_SIZE, Z_SIZE);
-    int *tar_mat = alloc_mat(X_SIZE, Y_SIZE, Z_SIZE);
+    element *src_mat = alloc_mat(X_SIZE, Y_SIZE, Z_SIZE);
+    element *tar_mat = alloc_mat(X_SIZE, Y_SIZE, Z_SIZE);
 
-    memset(src_mat, 0x0, sizeof(int) * X_SIZE * Y_SIZE * Z_SIZE);
-    memset(tar_mat, 0x0, sizeof(int) * X_SIZE * Y_SIZE * Z_SIZE);
+    memset(src_mat, 0x1, sizeof(element) * X_SIZE * Y_SIZE * Z_SIZE);
+    memset(tar_mat, 0x0, sizeof(element) * X_SIZE * Y_SIZE * Z_SIZE);
 
     int i, j, k;
     #pragma omp parallel for shared(tar_mat) private(i,j,k) schedule(static,100)
