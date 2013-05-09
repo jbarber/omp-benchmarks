@@ -1,0 +1,17 @@
+=head1 NAME
+
+omp-benchmarks
+
+=head1 DESCRIPTION
+
+This is just a simple set of scripts / programs to provide a skeleton to
+benchmark different L<OpenMP|http://www.openmp.org/> scenarios.
+
+=head1 LICENSE
+
+This project is licensed under the Perl Artistic License 2.0 (see LICENSE for a
+copy).
+
+=head1 AUTHOR
+
+Jonathan Barber
